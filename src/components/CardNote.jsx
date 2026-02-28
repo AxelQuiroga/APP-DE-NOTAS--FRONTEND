@@ -1,6 +1,6 @@
 import {SquarePen,Trash} from 'lucide-react'
 
-export const CardNote = ({title,description,date}) => {//id
+export const CardNote = ({title,description,id,date,onDelete,onEdit}) => {//id
   return (
     <div className="card bg-base-300 w-full">
       
@@ -12,8 +12,8 @@ export const CardNote = ({title,description,date}) => {//id
         <div className="flex justify-between items-center mt-6">
           <time dateTime={date}>{date}</time>
           <div className="flex gap-4">
-            <SquarePen className='text-white cursor-pointer' ></SquarePen>
-            <Trash className='text-red-400 cursor-pointer'></Trash>
+            <SquarePen className='text-white cursor-pointer'  onClick={() => onEdit(id)} ></SquarePen>
+            <Trash className='text-red-400 cursor-pointer' onClick={() => onDelete(id)}></Trash>
           </div>
         </div>
       </div>

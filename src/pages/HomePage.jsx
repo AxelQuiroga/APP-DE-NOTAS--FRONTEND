@@ -60,6 +60,8 @@ const HomePage = () => {
           key={note._id}
           title={note.title}
           description={note.description}
+          email={note.email}
+          phone={note.phone}
           id={note._id}
           date={formatData(note.createdAt)}
           onDelete={(id) => setNoteToDelete(id)}

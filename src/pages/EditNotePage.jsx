@@ -7,7 +7,7 @@ import { toast } from "react-toastify"
 const EditNotePage = () => {
   const navigate = useNavigate()
   const { id } = useParams(); // <-- acá capturamos el id de la URL
-  const [note, setNote] = useState({ title: "", description: "" });
+  const [note, setNote] = useState({ title: "", description: "",email:"",phone:"" });
 
   useEffect(() => {
     // Traemos la nota del backend

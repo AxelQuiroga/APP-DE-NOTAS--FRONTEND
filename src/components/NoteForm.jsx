@@ -4,9 +4,8 @@ import { toast } from "react-toastify";
 const NoteForm = ({ onSubmit, initialDate }) => {
   const [note, setNotes] = useState(initialDate);
 
-  //necesitamos acttualizar cambios si datos iniciales cambian
   useEffect(() => {
-    setNotes[initialDate];
+    setNotes(initialDate);
   }, [initialDate]);
 
   const handleChange = (e) => {
@@ -19,7 +18,6 @@ const NoteForm = ({ onSubmit, initialDate }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // VALIDACIONES
     if (!note.title.trim()) {
       toast.error("El título es obligatorio");
       return;
@@ -35,17 +33,6 @@ const NoteForm = ({ onSubmit, initialDate }) => {
       return;
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(note.email)) {
-      toast.error("Email inválido");
-      return;
-    }
-
-    if (!/^\+?[0-9]{8,15}$/.test(note.phone)) {
-      toast.error("Número inválido");
-      return;
-    }
-
-    // Si pasa todo:
     onSubmit(note);
   };
 
@@ -55,8 +42,7 @@ const NoteForm = ({ onSubmit, initialDate }) => {
       className="bg-base-300 rounded-lg max-w-4xl mx-auto p-10"
     >
       <input
-        className="block w-full mb-8 input lg:input-lg focus:ring-0 focus:outline-0
-        border-0"
+        className="block w-full mb-8 input lg:input-lg focus:ring-0 focus:outline-0 border-0"
         placeholder="Title"
         type="text"
         id="title"
@@ -77,27 +63,7 @@ const NoteForm = ({ onSubmit, initialDate }) => {
         required
       ></textarea>
 
-      <input
-        className="block w-full mb-8 input lg:input-lg focus:ring-0 focus:outline-0
-        border-0"
-        name="email"
-        type="email"
-        value={note.email}
-        onChange={handleChange}
-        placeholder="Email"
-      />
-
-      <input
-        className="block w-full mb-8 input lg:input-lg focus:ring-0 focus:outline-0
-        border-0"
-        name="phone"
-        type="text"
-        value={note.phone}
-        onChange={handleChange}
-        placeholder="Teléfono"
-      />
-
-      <button className="btn btn-soft btn-primary ">Submit</button>
+      <button className="btn btn-soft btn-primary">Submit</button>
     </form>
   );
 };

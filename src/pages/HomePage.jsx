@@ -1,51 +1,64 @@
 import { useEffect, useState } from "react";
 import { CardNote } from "../components/CardNote";
-import axios from "axios";
 import formatData from "../../utils/formatDate";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const apiURL = import.meta.env.VITE_API_URL;
+import api from "../lib/api";
 
 const HomePage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [noteToDelete, setNoteToDelete] = useState(null); //confirmacion si quiere borrar
+  const [noteToDelete, setNoteToDelete] = useState(null);
 
   const handleDelete = async () => {
-    //fuuncion para borrar
     try {
-      const res = await axios.delete(`${apiURL}/api/notes/${noteToDelete}`);
-      console.log(res.status);
+      await api.delete(`/api/notes/${noteToDelete}`);
 
       setNotes((prevNotes) =>
         prevNotes.filter((note) => note._id !== noteToDelete),
       );
-      toast.success("¡Note eliminated sucessfully", {
+      toast.success("¡Note eliminado correctamente", {
         position: "bottom-center",
         autoClose: 3000,
         theme: "colored",
       });
-      setNoteToDelete(null); //cerrar modal
+      setNoteToDelete(null);
     } catch (error) {
       console.error(error);
-      toast.error("Error deleting note");
+      if (error?.response?.status === 401) {
+        return;
+      }
+      toast.error("Error al eliminar la nota");
     }
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiURL}/api/notes`);
-        setNotes(response.data);
-        setLoading(false);
-        console.log(response);
+        const response = await api.get(`/api/notes`);
+        if (isMounted) {
+          setNotes(response.data);
+        }
       } catch (error) {
-        console.log(error);
+        if (error?.response?.status === 401) {
+          return;
+        }
+        toast.error("No se pudieron cargar las notas");
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading) return <span>Cargando...</span>;
@@ -60,8 +73,6 @@ const HomePage = () => {
           key={note._id}
           title={note.title}
           description={note.description}
-          email={note.email}
-          phone={note.phone}
           id={note._id}
           date={formatData(note.createdAt)}
           onDelete={(id) => setNoteToDelete(id)}
